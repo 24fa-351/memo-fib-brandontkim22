@@ -5,36 +5,50 @@
 unsigned long long int fib_r(unsigned long long int n);
 unsigned long long int memo[100];
 
-unsigned long long int r_fib_provider(unsigned long long int n) { // Recursive fib(). Since
-   if (n <= 1) {                      // fibonacci #1 is 0, adjust
-      return 0;                       // the other values to fit
-   } else if (n == 2) {               // the constraints
+// Recursive fib(). Since fibonacci #1 is 0, adjust the other values
+// to fit the constraints
+unsigned long long int r_fib_provider(unsigned long long int n) {
+   if (n <= 1) {
+      return 0;
+   } else if (n == 2) {
       return 1;
    }
 
-   return fib_r(n - 1) + fib_r(n - 2);  // Using recursion, find fib(n)
+   // Using recursion, call the recursive memoization function
+   // (wrapper) to calculate the current "n" value. This will
+   // check to see if any value has already been computed.
+   return fib_r(n - 1) + fib_r(n - 2);
 }                                   
 
-unsigned long long int i_fib_provider(unsigned long long int n) { // Iterative fib(). Same as
-   if (n <= 1) {                      // above, make sure fib(1)
-      return 0;                       // is 0. Then adjust the
-   } else if (n == 2) {               // other values
+// Iterative fib(). Same as above, make sure fib(1) is 0. Then adjust
+// the other values
+unsigned long long int i_fib_provider(unsigned long long int n) {
+   if (n <= 1) {
+      return 0;
+   } else if (n == 2) {
       return 1;                       
    }
 
-   unsigned long long int a = 0;               // Set the initial values for
-   unsigned long long int b = 1;               // the iterative sequence
+   // Set the initial values for the iterative sequence
+   unsigned long long int a = 0;
+   unsigned long long int b = 1;
    unsigned long long int result = 0;                    
 
+   // Update the result and variables for the next iteration
    for (unsigned long long int i = 3; i <= n; ++i) {
-      result = a + b;                 // Update the result and
-      a = b;                          // variables for the next
-      b = result;                     // iteration
+      result = a + b;
+      a = b;
+      b = result;
    }                                  
 
-   return result;                     // Return the result.
+   // Return the result
+   return result;
 }                                     
 
+// Recursive memoization function. First checks to see if the value
+// at the index (current number) is in the cache. If it is, return
+// the value. Otherwise, call the core recursive function to
+// calculate the value and store it in the array.
 unsigned long long int fib_r(unsigned long long int n) {
    if (memo[n] != -1) {
       return memo[n];
@@ -51,6 +65,10 @@ unsigned long long int fib_r(unsigned long long int n) {
    return memo[n];
 }
 
+// Iterative memoization function. First checks to see if the value
+// at the index (current number) is in the cache. If it is, return
+// the value. Otherwise, call the core iterative function to
+// calculate the value and store it in the array.
 unsigned long long int fib_i(unsigned long long int n) {
    if (memo[n] != -1) {
       return memo[n];
@@ -67,31 +85,37 @@ unsigned long long int fib_i(unsigned long long int n) {
    return memo[n];
 }
 
+// Fill the memoization array with -1's (-1 means not computed yet)
 void initialize_memo() {
-   // fill memoization array with -1's (-1 means not computed yet)
    for (unsigned long long int i = 0; i <= 99; ++i) {
       memo[i] = -1;
    }
 }
 
-int main(int argc, char* argv[]) {    // cmd line inputs for main()
-   unsigned long long int n;          // Create and store the cmd
-   sscanf(argv[1], "%llu", &n);       // line integer into a variable
+int main(int argc, char* argv[]) {
+   // Create and store the cmd line integer into a variable
+   unsigned long long int n;
+   sscanf(argv[1], "%llu", &n);
 
-   char type = argv[2][0];            // Store the type of method
+   // Store the type of method
+   char type = argv[2][0];
 
    unsigned long long int number = 0;
    initialize_memo();
 
-   if (type == 'i') {                 // If the type of method is 
-      number = fib_i(n);               // iterative, call ifib(),
-   } else if (type == 'r') {          // otherwise call rfib().
+   // If the type of method is iterative, call ifib() (iterative 
+   // memo cache), otherwise call rfib() (recursive memo cache).
+   // If the type is invalid, set the result to 0.
+   if (type == 'i') {
+      number = fib_i(n);
+   } else if (type == 'r') {
       number = fib_r(n);
-   } else {                           // If the type is invalid,
-      number = 0;                     // set number to 0
+   } else {
+      number = 0;
    }
 
-   printf("%llu", number);            // Print the result
+   // Print the result
+   printf("%llu", number);
 
    return 0;
 }
